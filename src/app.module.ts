@@ -1,8 +1,6 @@
 import { Module } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { ConfigModule } from '@nestjs/config';
-
-// Importar los módulos de la aplicación
 import { UserModule } from './modules/users/users.module';
 import { ProductModule } from './modules/products/products.module';
 import { CartModule } from './modules/cart/cart.module';
