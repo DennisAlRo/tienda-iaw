@@ -7,25 +7,46 @@ import { UpdateUserDto } from './dto/update-user.dto';
 
 @Injectable()
 export class UserService {
-  constructor(@InjectRepository(User, 'base1') private userRepository: Repository<User>) {}
+  constructor(
+    @InjectRepository(User, 'base1') private userRepository: Repository<User>,
+  ) {}
 
-  create(createUserDto: CreateUserDto) {
+  // Crear un nuevo usuario
+  async create(createUserDto: CreateUserDto) {
     const newUser = this.userRepository.create(createUserDto);
-    return this.userRepository.save(newUser);
+    return await this.userRepository.save(newUser);
   }
 
+  // Verificar si las credenciales son correctas (nombre y contraseña)
+  async findByCredentials(name: string, password: string): Promise<User | null> {
+    const user = await this.userRepository.findOne({
+      where: { name, password },  // Busca un usuario que coincida con el nombre y la contraseña
+    });
+    return user;  // Retorna el usuario si existe o null si no lo encuentra
+  }
+
+  // Buscar un usuario por su nombre (usado en el JWT para validación)
+  async findOneByName(name: string): Promise<User | null> {
+    return this.userRepository.findOne({ where: { name } });
+  }
+
+  // Obtener todos los usuarios
   findAll() {
     return this.userRepository.find();
   }
 
+  // Obtener un usuario por su id
   findOne(id: number) {
     return this.userRepository.findOne({ where: { id } });
   }
 
-  update(id: number, updateUserDto: UpdateUserDto) {
-    return this.userRepository.update(id, updateUserDto);
+  // Actualizar la información de un usuario
+  async update(id: number, updateUserDto: UpdateUserDto) {
+    await this.userRepository.update(id, updateUserDto);
+    return this.findOne(id);
   }
 
+  // Eliminar un usuario por su id
   remove(id: number) {
     return this.userRepository.delete(id);
   }

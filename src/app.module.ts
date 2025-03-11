@@ -5,6 +5,7 @@ import { UserModule } from './modules/users/users.module';
 import { ProductModule } from './modules/products/products.module';
 import { CartModule } from './modules/cart/cart.module';
 import { CartProductModule } from './modules/cart-product/cart-product.module';
+import { AuthModule } from './modules/auth/auth.module'; // Agregar AuthModule
 
 @Module({
   imports: [
@@ -28,6 +29,7 @@ import { CartProductModule } from './modules/cart-product/cart-product.module';
     ProductModule,
     CartModule,
     CartProductModule,
+    AuthModule,  // Agregar AuthModule a la lista de imports
   ],
 })
 export class AppModule {}
