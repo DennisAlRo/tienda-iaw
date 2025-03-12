@@ -6,17 +6,17 @@ import { UserService } from '../users/users.service';
 import { JwtPayload } from './jwt.payload.interface';
 
 @Injectable()
-export class JwtStrategy extends PassportStrategy(Strategy) {
+export class JwtStrategy extends PassportStrategy(Strategy, 'jwt') {  // 🔹 Agregamos el nombre 'jwt'
   constructor(private readonly userService: UserService) {
     super({
       jwtFromRequest: ExtractJwt.fromAuthHeaderAsBearerToken(),
       ignoreExpiration: false,
-      secretOrKey: 'secretKey',  // Cambia esta clave por algo más seguro
+      secretOrKey: 'your-secret-key',  // 🔹 Ahora coincide con AuthModule
     });
   }
 
   async validate(payload: JwtPayload) {
-    const { sub } = payload;  // 'sub' es el ID del usuario
-    return await this.userService.findOne(sub);  // Busca al usuario con el ID
+    const { sub } = payload;
+    return await this.userService.findOne(sub);  // Retorna el usuario autenticado
   }
 }

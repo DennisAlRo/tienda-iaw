@@ -10,12 +10,24 @@ import { User } from '../users/entities/user.entity';
 export class CartService {
   constructor(@InjectRepository(Cart, 'base1') private cartRepository: Repository<Cart>) {}
 
-  create(createCartDto: CreateCartDto) {
+  async create(createCartDto: CreateCartDto) {
     const newCart = this.cartRepository.create({
-      user: { id: createCartDto.userId } as User,
+      user: { id: createCartDto.userId } as User,  // Aquí asignamos el usuario utilizando el ID
       preciototal: createCartDto.preciototal,
     });
     return this.cartRepository.save(newCart);
+  }
+
+  async createCartIfNotExists(userId: number) {
+    const existingCart = await this.cartRepository.findOne({ where: { user: { id: userId } } });
+
+    if (!existingCart) {
+      const newCart = this.cartRepository.create({
+        user: { id: userId } as User,  // Aseguramos que user se asigna correctamente
+        preciototal: 0,  // Precio inicial en 0
+      });
+      await this.cartRepository.save(newCart);
+    }
   }
 
   findAll() {
